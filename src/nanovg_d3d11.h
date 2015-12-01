@@ -440,14 +440,6 @@ static int D3Dnvg__renderCreate(void* uptr)
     
     struct D3DNVGcontext* D3D = (struct D3DNVGcontext*)uptr;
 
-    const D3D11_DEPTH_STENCILOP_DESC frontOp = { D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_INCR, D3D11_COMPARISON_ALWAYS };
-    const D3D11_DEPTH_STENCILOP_DESC backOp = { D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_DECR, D3D11_COMPARISON_ALWAYS };
-    
-    const D3D11_DEPTH_STENCILOP_DESC aaOp = { D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_COMPARISON_EQUAL };
-    const D3D11_DEPTH_STENCILOP_DESC fillOp = { D3D11_STENCIL_OP_ZERO, D3D11_STENCIL_OP_ZERO, D3D11_STENCIL_OP_ZERO, D3D11_COMPARISON_NOT_EQUAL };
-    
-    const D3D11_DEPTH_STENCILOP_DESC defaultOp = { D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_COMPARISON_ALWAYS };
-    
     D3D11_INPUT_ELEMENT_DESC LayoutRenderTriangles[] = 
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -548,6 +540,9 @@ static int D3Dnvg__renderCreate(void* uptr)
     depthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
     depthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
 
+    const D3D11_DEPTH_STENCILOP_DESC frontOp = { D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_INCR, D3D11_COMPARISON_ALWAYS };
+    const D3D11_DEPTH_STENCILOP_DESC backOp = { D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_DECR, D3D11_COMPARISON_ALWAYS };
+
     depthStencilDesc.FrontFace = frontOp;
     depthStencilDesc.BackFace = backOp;
     
@@ -555,16 +550,18 @@ static int D3Dnvg__renderCreate(void* uptr)
     hr = D3D_API_2(D3D->pDevice, CreateDepthStencilState, &depthStencilDesc, &D3D->pDepthStencilDrawShapes);
 
     // Draw AA
+    const D3D11_DEPTH_STENCILOP_DESC aaOp = { D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_COMPARISON_EQUAL };
     depthStencilDesc.FrontFace = aaOp;
     depthStencilDesc.BackFace = aaOp;
-    
     hr = D3D_API_2(D3D->pDevice, CreateDepthStencilState, &depthStencilDesc, &D3D->pDepthStencilDrawAA);
 
     // Stencil Fill
+    const D3D11_DEPTH_STENCILOP_DESC fillOp = { D3D11_STENCIL_OP_ZERO, D3D11_STENCIL_OP_ZERO, D3D11_STENCIL_OP_ZERO, D3D11_COMPARISON_NOT_EQUAL };
     depthStencilDesc.FrontFace = fillOp;
     depthStencilDesc.BackFace = fillOp;
     hr = D3D_API_2(D3D->pDevice, CreateDepthStencilState, &depthStencilDesc, &D3D->pDepthStencilFill);
 
+    const D3D11_DEPTH_STENCILOP_DESC defaultOp = { D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_COMPARISON_ALWAYS };
     depthStencilDesc.FrontFace = defaultOp;
     depthStencilDesc.BackFace = defaultOp;
     depthStencilDesc.StencilEnable = FALSE;
