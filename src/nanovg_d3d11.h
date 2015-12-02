@@ -457,7 +457,7 @@ static int D3Dnvg__renderCreate(void* uptr)
 
     // Todo: Need to find a good value for this, and
     // Use the dynamic buffer fill technnique to handle overflow
-    D3D->VertexBuffer.MaxBufferEntries = 20000;
+    D3D->VertexBuffer.MaxBufferEntries = 200000;
     D3D->VertexBuffer.CurrentBufferEntry = 0;
 
     memset(&bufferDesc, 0, sizeof(bufferDesc));
